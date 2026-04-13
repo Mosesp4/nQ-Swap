@@ -174,10 +174,11 @@ export function TokenSelector({
               className={[
                 'fixed z-50 left-1/2 -translate-x-1/2',
                 'w-[calc(100vw-32px)] max-w-[400px]',
-                'top-1/2 -translate-y-1/2',
+                'top-[30%] -translate-y-1/2',
+                'max-h-[min(560px,calc(100dvh-48px))]',
                 'bg-nq-surface border border-nq-border rounded-2xl',
                 'shadow-2xl shadow-black/50',
-                'overflow-hidden',
+                'overflow-hidden flex flex-col',
               ].join(' ')}
             >
               <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-nq-border">
@@ -233,7 +234,7 @@ export function TokenSelector({
                 </div>
               </div>
 
-              <div className="overflow-y-auto max-h-[300px] px-2 pb-3">
+              <div className="overflow-y-auto flex-1 min-h-0 px-2 pb-3">
                 {filtered.length === 0 ? (
                   <div className="py-8 text-center text-nq-muted text-sm">
                     No tokens match &ldquo;{query}&rdquo;

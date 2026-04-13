@@ -100,9 +100,7 @@ function lsWrite(tx: PendingTransaction): void {
     localStorage.setItem(LS_KEY, JSON.stringify(tx));
   } catch (err) {
     // QuotaExceededError — non-blocking, log and continue
-    if (import.meta.env.DEV) {
-      console.warn('[transactionStorage] localStorage write failed:', err);
-    }
+    if (import.meta.env.DEV) console.warn('[transactionStorage] localStorage write failed:', err);
   }
 }
 
@@ -168,7 +166,7 @@ export async function getPendingTransaction(
     tx = (await db.get(STORE_NAME, hash)) ?? null;
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn('[transactionStorage] IndexedDB read failed, trying localStorage:', err);
+      if (import.meta.env.DEV) console.warn('[transactionStorage] IndexedDB read failed, trying localStorage:', err);
     }
   }
 
@@ -222,7 +220,7 @@ export async function getAnyPendingTransaction(): Promise<PendingTransaction | n
     }
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn('[transactionStorage] IndexedDB scan failed:', err);
+      if (import.meta.env.DEV) console.warn('[transactionStorage] IndexedDB scan failed:', err);
     }
   }
 
@@ -240,7 +238,7 @@ export async function clearPendingTransaction(hash: `0x${string}`): Promise<void
     await db.delete(STORE_NAME, hash);
   } catch (err) {
     if (import.meta.env.DEV) {
-      console.warn('[transactionStorage] IndexedDB delete failed:', err);
+      if (import.meta.env.DEV) console.warn('[transactionStorage] IndexedDB delete failed:', err);
     }
   }
 }
