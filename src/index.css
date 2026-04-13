@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-nq-bg text-nq-text font-sans;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  /* Focus visible outline — keyboard nav only */
+  :focus-visible {
+    outline: 2px solid theme('colors.nq.accent');
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .nq-glow {
+    box-shadow:
+      0 0 20px theme('colors.nq.accent-glow'),
+      0 0 40px theme('colors.nq.accent-glow');
+  }
+
+  .nq-card {
+    @apply bg-nq-surface border border-nq-border rounded-2xl;
+  }
+}
+
+/* ConnectKit modal style overrides */
+:root {
+  --ck-font-family: 'DM Sans', system-ui, sans-serif;
+  --ck-border-radius: 16px;
+  --ck-overlay-background: rgba(0, 0, 0, 0.7);
+  --ck-body-background: #111118;
+  --ck-body-color: #e2e8f0;
+  --ck-primary-button-background: #7c3aed;
+  --ck-primary-button-hover-background: #6d28d9;
+}
