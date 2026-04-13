@@ -310,12 +310,22 @@ export function SwapWidget() {
       // Uses the pre-configured Wagmi transport (your .env RPC keys).
       // A successful getBlockNumber() proves the network is reachable
       // before we ask the user to sign anything.
-      _dispatch({ type: 'SIMULATE' });
+       _dispatch({ type: 'SIMULATE' });
       try {
         const { getPublicClient } = await import('@wagmi/core');
         const client = getPublicClient(wagmiConfig, { chainId });
         if (!client) throw new Error('No public client for chain');
-        await client.getBlockNumber();
+
+        // Race the RPC call against a 8-second timeout.
+        // Without this, a slow or rate-limited RPC hangs the widget
+        // in Simulating indefinitely — the call never rejects, just stalls.
+        await Promise.race([
+          client.getBlockNumber(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('RPC timeout after 8s')), 8000)
+          ),
+        ]);
+
         _dispatch({ type: 'SIMULATE_SUCCESS' });
       } catch (err) {
         const rpcErr = new Error(
@@ -324,10 +334,10 @@ export function SwapWidget() {
         toast.error(
           'Network Error — Retry',
           'Could not reach the network. Check your RPC configuration or connection.',
-          0 // persistent — user must dismiss
+          0
         );
         _dispatch({ type: 'SIMULATE_FAIL', error: rpcErr });
-        return; // handled — do not rethrow
+        return;
       }
 
       // Step 2: Request wallet approval
