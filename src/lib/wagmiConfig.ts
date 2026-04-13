@@ -118,7 +118,7 @@ export const wagmiConfig = createConfig(
       (import.meta.env.VITE_WALLETCONNECT_PROJECT_ID as string) ?? '',
     appName: 'nQ Swap',
     appDescription: 'Production-grade DeFi swap widget',
-    appUrl: 'https://nq-swap.com',
+    appUrl: 'https://n-q-swap.vercel.app/',
     appIcon: '/nq-icon.svg',
   })
 );
