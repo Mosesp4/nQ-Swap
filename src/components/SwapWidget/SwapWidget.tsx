@@ -4,7 +4,6 @@ import { useAccount, useChainId } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { TokenSelector } from './TokenSelector';
 import { SwapButton } from './SwapButton';
-import { wagmiConfig } from '@/lib/wagmiConfig';
 import type { SwapButtonState } from './SwapButton';
 import { RecoveryBanner } from './RecoveryBanner';
 import { SLIPPAGE_PRESETS, DEFAULT_SLIPPAGE, TX_TTL_MS } from '@/constants';
@@ -307,38 +306,12 @@ export function SwapWidget() {
       if (statusAfterReset !== 'Idle') return;
 
       //  Step 1: Simulate via Wagmi public client
-      // Uses the pre-configured Wagmi transport (your .env RPC keys).
-      // A successful getBlockNumber() proves the network is reachable
-      // before we ask the user to sign anything.
-       _dispatch({ type: 'SIMULATE' });
-      try {
-        const { getPublicClient } = await import('@wagmi/core');
-        const client = getPublicClient(wagmiConfig, { chainId });
-        if (!client) throw new Error('No public client for chain');
-
-        // Race the RPC call against a 8-second timeout.
-        // Without this, a slow or rate-limited RPC hangs the widget
-        // in Simulating indefinitely — the call never rejects, just stalls.
-        await Promise.race([
-          client.getBlockNumber(),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('RPC timeout after 8s')), 8000)
-          ),
-        ]);
-
-        _dispatch({ type: 'SIMULATE_SUCCESS' });
-      } catch (err) {
-        const rpcErr = new Error(
-          `Network unreachable: all RPC endpoints failed for chain ${chainId}.`
-        );
-        toast.error(
-          'Network Error — Retry',
-          'Could not reach the network. Check your RPC configuration or connection.',
-          0
-        );
-        _dispatch({ type: 'SIMULATE_FAIL', error: rpcErr });
-        return;
-      }
+       // Mock simulation — resolves in 1.5s to demonstrate the Simulating
+      // state. In production this would call a DEX aggregator quote API
+      // and validate balance/allowance before requesting wallet approval.
+      _dispatch({ type: 'SIMULATE' });
+      await new Promise((r) => setTimeout(r, 1500));
+      _dispatch({ type: 'SIMULATE_SUCCESS' });
 
       // Step 2: Request wallet approval
       _dispatch({ type: 'REQUEST_APPROVAL', requestId });
